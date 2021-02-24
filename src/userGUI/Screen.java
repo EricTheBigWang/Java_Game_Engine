@@ -8,10 +8,11 @@ import javax.swing.JPanel;
 
 import assetManager.Sound;
 import factory.Factory;
-import information.Setting;
 import input.MouseInput;
+import main.Main;
 import toolkit.Debug;
 import toolkit.Tools;
+import userGUI.taskBar.TaskBar;
 
 /**
  * A class that manages and renders all objects in the program.
@@ -24,31 +25,23 @@ import toolkit.Tools;
 public class Screen extends JPanel {
 	
 	private static Screen screen;
-	
-	/**
-	 * Accounts for all the pages.
-	 */
+
 	private static HashMap <String, Page> pages;
 	private static String currentPage;
-	
-	/**
-	 * Dimensions of rendered area.
-	 */
-	private static int screenX;
-	private static int screenY;
-	private static int screenLength;
-	private static int screenHeight;
-	
-	/**
-	 * Accounts for transition between pages.
-	 */
 	private static boolean isTransitioning;
 	private static int transitionTimer;
 	private static final double TRANSITIONDURATION = 10.0;
-
 	private static String endPage;
 	private static ArrayList<Integer> opacities;
-	
+
+	private static final int HORIZONTALPADDING = 0;
+	private static final int VERTICALPADDING = 0;
+
+	private static int screenX;
+	private static int screenY;
+	private static int screenHeight;
+	private static int screenLength;
+
 	/**
 	 * Screen constructor.
 	 */
@@ -63,9 +56,6 @@ public class Screen extends JPanel {
 		}
 		
 		Screen.pages = new HashMap<String, Page>();
-		
-		screenHeight = 288;
-		screenLength = 288;
 	}
 	
 	/**
@@ -94,11 +84,11 @@ public class Screen extends JPanel {
 	 * Update all objects on the screen.
 	 */
 	public void update() {
-		// Sound.loopClip("background");
+		screenX = HORIZONTALPADDING;
+		screenY = VERTICALPADDING;
+		screenLength = Frame.getLength() - 2 * HORIZONTALPADDING;
+		screenHeight = Frame.getHeight() - 2 * VERTICALPADDING - TaskBar.getInstance().getHeight();
 
-		screenX = (Setting.getFrameLength() - screenLength) / 2;
-		screenY = (Setting.getFrameHeight() - screenHeight - Setting.getTaskBarHeight()) / 2;
-				
 		if (isTransitioning) {
 			transitionTimer++;
 			if (transitionTimer == TRANSITIONDURATION) {
@@ -138,7 +128,7 @@ public class Screen extends JPanel {
 		);
 		
 		((Graphics2D) g).setRenderingHint(
-			RenderingHints.KEY_ALPHA_INTERPOLATION, 
+			RenderingHints.KEY_ALPHA_INTERPOLATION,
 			RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY
 		);
 		
@@ -146,13 +136,15 @@ public class Screen extends JPanel {
 			RenderingHints.KEY_RENDERING, 
 			RenderingHints.VALUE_RENDER_QUALITY
 		);
-		
+
+		g.setColor(new Color(25, 25, 25));
+		g.fillRect(0, 0, Main.getLength(), Main.getHeight());
+
 		// Fill the game screen with a default color
 		g.translate(screenX, screenY);
 		g.setColor(new Color(255, 255, 255));
 		g.fillRect(0, 0, screenLength, screenHeight);
 		render(g);
-		
 		g.translate(-screenX, -screenY);
 		Debug.render(g);
 		
@@ -195,7 +187,7 @@ public class Screen extends JPanel {
 	 * Transition to the current page to be updated and rendered.
 	 * 
 	 * @param pageName  the name of the page to be transitioned to
-	 * @throw           IllegalArgumentExeption is the page is not found.
+	 * @throw           IllegalArgumentException is the page is not found.
 	 */
 	public static void setPage(String pageName) {
 		if (!pages.containsKey(pageName))
@@ -242,5 +234,13 @@ public class Screen extends JPanel {
 
 	public static void setTransitionTimer(int transitionTimer) {
 		Screen.transitionTimer = transitionTimer;
+	}
+
+	public static final int getVerticalPadding() {
+		return VERTICALPADDING;
+	}
+
+	public static final int getHorizontalPadding() {
+		return HORIZONTALPADDING;
 	}
 }

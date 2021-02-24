@@ -10,8 +10,8 @@ import java.awt.event.MouseMotionAdapter;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import information.Setting;
 import main.Main;
+import userGUI.Frame;
 import userGUI.taskBar.icon.Icon;
 import userGUI.text.Text;
 
@@ -19,11 +19,13 @@ import userGUI.text.Text;
 public class TaskBar extends JPanel {
 	
 	public static TaskBar taskBar;
-	
+
+	private static final int TASKBARHEIGHT = 30;
+
 	protected static final double GOLDENRATIO = 1.6180339887498948420;
-	protected static final int BUTTONWIDTH = (int) (Setting.getTaskBarHeight() * GOLDENRATIO);
+	protected static final int BUTTONWIDTH = (int) (TASKBARHEIGHT * GOLDENRATIO);
 	protected static final int BUTTONSPACING = 0;
-	
+
 	private static boolean isMoving;
 	private static boolean isFocused;
 
@@ -35,11 +37,18 @@ public class TaskBar extends JPanel {
 	private static final Text TASKBARTEXT = new Text("GAME", 42, 8);
 	
 	private TaskBar() {
-		setPreferredSize(	
-			new Dimension(
-				Setting.getFrameLength() - 2 * Setting.getBorderLength(), 
-				Setting.getTaskBarHeight()
-			)
+		setSize(
+				new Dimension(
+						Frame.getLength() - 2 * Frame.getBorderLength(),
+						TASKBARHEIGHT
+				)
+		);
+
+		setPreferredSize(
+				new Dimension(
+						Frame.getLength() - 2 * Frame.getBorderLength(),
+						TASKBARHEIGHT
+				)
 		);
 		
 		TaskBar.isMoving = false;
@@ -108,8 +117,7 @@ public class TaskBar extends JPanel {
 		ExitButton.getInstance().update();
 		MaximizeButton.getInstance().update();
 		MinimizeButton.getInstance().update();
-		
-		// TODO, check for border resizing
+
 		ExitButton.getInstance().setLocation();
 		MaximizeButton.getInstance().setLocation();
 		MinimizeButton.getInstance().setLocation();
@@ -131,15 +139,15 @@ public class TaskBar extends JPanel {
 		MaximizeButton.getInstance().render(g);
 		MinimizeButton.getInstance().render(g);
     }
-	
-	public static double getGoldenratio() {
+
+	public static double getGoldenRatio() {
 		return GOLDENRATIO;
 	}
-	
-	public static int getButtonwidth() {
+
+	public static int getButtonWidth() {
 		return BUTTONWIDTH;
 	}
-	
+
 	public static boolean isFocused() {
 		return isFocused;
 	}

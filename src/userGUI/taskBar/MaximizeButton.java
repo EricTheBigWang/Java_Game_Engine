@@ -9,8 +9,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 
 import assetManager.Texture;
-import information.Setting;
 import main.Main;
+import userGUI.Frame;
 import userGUI.button.ImageButton;
 
 public class MaximizeButton extends ImageButton {
@@ -19,10 +19,10 @@ public class MaximizeButton extends ImageButton {
 	
 	private MaximizeButton() {
 		super(
-			Setting.getFrameLength() - TaskBar.BUTTONSPACING - 2 * TaskBar.BUTTONWIDTH,
+			Frame.getLength() - TaskBar.BUTTONSPACING - 2 * TaskBar.BUTTONWIDTH,
 			0,
-			TaskBar.BUTTONWIDTH, 
-			Setting.getTaskBarHeight()
+			TaskBar.BUTTONWIDTH,
+			TaskBar.getInstance().getHeight()
 		);
 		
 		setColors(new Color(240, 240, 240), new Color(225, 225, 225), new Color(210, 210, 210));
@@ -31,26 +31,22 @@ public class MaximizeButton extends ImageButton {
 		
 		addActionListener(new ActionListener () {
 			public void actionPerformed(ActionEvent e) {
-				Setting.setMaximized(!Setting.isMaximized());
+				Frame.setMaximized(!Frame.isMaximized());
 				
-				if (Setting.isMaximized()) {
+				if (Frame.isMaximized()) {
 					Main.getFrame().setLocation(0, 0);
-					
-					Setting.setDefaultFrameHeight(Setting.getFrameHeight());
-					Setting.setDefaultFrameLength(Setting.getFrameLength());
+
+					// TODO Fix
+					// Frame.setDefaultHeight(Frame.getHeight());
+					// Frame.setDefaultLength(Frame.getLength());
 					
 					Main.getFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
 				
 				} else {
-					Main.getFrame().setSize(
-						new Dimension(
-							Setting.getDefaultFrameLength(), 
-							Setting.getDefaultFrameHeight()
-						)
-					);
+					Main.getFrame().setSize(new Dimension(Frame.getDefaultLength(), Frame.getDefaultHeight()));
 					
-					Setting.setFrameLength(Main.getLength());
-			    	Setting.setFrameHeight(Main.getHeight());
+					Frame.setLength(Main.getLength());
+			    	Frame.setHeight(Main.getHeight());
 					
 					Main.getFrame().setLocationRelativeTo(null);
 				}
@@ -89,8 +85,8 @@ public class MaximizeButton extends ImageButton {
 	
 	public void setLocation() {
 		super.setLocation(
-			Setting.getFrameLength() - TaskBar.BUTTONSPACING - 2 * TaskBar.BUTTONWIDTH,
-			0
+				Frame.getLength() - TaskBar.BUTTONSPACING - 2 * TaskBar.BUTTONWIDTH,
+				0
 		);
 	}
 }

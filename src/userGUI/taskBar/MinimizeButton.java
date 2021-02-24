@@ -8,8 +8,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 
 import assetManager.Texture;
-import information.Setting;
 import main.Main;
+import userGUI.Frame;
 import userGUI.button.ImageButton;
 
 public class MinimizeButton extends ImageButton{
@@ -18,10 +18,10 @@ public class MinimizeButton extends ImageButton{
 	
 	private MinimizeButton() {
 		super(
-			Setting.getFrameLength() - 2 * TaskBar.BUTTONSPACING - 3 * TaskBar.BUTTONWIDTH,
+			Frame.getLength() - 2 * TaskBar.BUTTONSPACING - 3 * TaskBar.BUTTONWIDTH,
 			0, 
-			TaskBar.BUTTONWIDTH, 
-			Setting.getTaskBarHeight()
+			TaskBar.BUTTONWIDTH,
+			TaskBar.getInstance().getHeight()
 		);
 		
 		setColors(new Color(240, 240, 240), new Color(225, 225, 225), new Color(210, 210, 210));
@@ -64,7 +64,7 @@ public class MinimizeButton extends ImageButton{
 	
 	public void setLocation() {
 		super.setLocation(
-			Setting.getFrameLength() - 2 * TaskBar.BUTTONSPACING - 3 * TaskBar.BUTTONWIDTH, 
+			Frame.getLength() - 2 * TaskBar.BUTTONSPACING - 3 * TaskBar.BUTTONWIDTH,
 			0
 		);
 	}

@@ -18,12 +18,12 @@ import assetManager.Data;
 import assetManager.Sound;
 import assetManager.SpriteSheetLoader;
 import assetManager.Texture;
-import information.Setting;
 import input.KeyInput;
 import input.MouseInput;
 import loop.Loop;
 import toolkit.Debug;
 import toolkit.Tools;
+import userGUI.Frame;
 import userGUI.Screen;
 import userGUI.taskBar.TaskBar;
 
@@ -72,7 +72,7 @@ public class Main {
    			new Runnable() {
 	   			public void run() {
 	   				Main.getInstance();
-	   				Setting.getInstance();
+	   				Frame.getInstance();
 	   				Texture.getInstance();
 	   				SpriteSheetLoader.getInstance();
 	   				Sound.getInstance();
@@ -105,26 +105,15 @@ public class Main {
    	private static void setFrameBorder() {
    		frame.getRootPane().setBorder(
 			BorderFactory.createLineBorder(
-				new Color(230, 230, 230), 
-				Setting.getBorderLength()
+				new Color(230, 230, 230),
+				Frame.getBorderLength()
 			)
 		);
    	}
    	
    	private static void setFrameDimensions() {
-		frame.setMinimumSize(
-    		new Dimension(
-    			Setting.getMinFrameLength(), 
-    			Setting.getMinFrameHeight()
-    		)
-    	);
-    	
-    	frame.getContentPane().setPreferredSize(
-    		new Dimension(
-    			Setting.getFrameLength(), 
-    			Setting.getFrameHeight()
-    		)
-    	);
+		frame.setMinimumSize(new Dimension(Frame.getMinLength(), Frame.getMinHeight()));
+    	frame.getContentPane().setPreferredSize(new Dimension(Frame.getLength(), Frame.getHeight()));
 	}
    	
    	private static void addFrameListeners() {

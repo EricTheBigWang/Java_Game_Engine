@@ -3,9 +3,9 @@ package loop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import information.Setting;
 import input.KeyInput;
 import input.MouseInput;
+import userGUI.Frame;
 import userGUI.Screen;
 import userGUI.taskBar.TaskBar;
 
@@ -80,7 +80,7 @@ public class Loop implements ActionListener {
 	 * Update all objects in the application.
 	 */
 	public static void update() {
-		Setting.update();
+		Frame.getInstance().update();
 		mouseInput.update();
 		TaskBar.getInstance().update();
 		Screen.getInstance().update();

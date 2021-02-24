@@ -3,19 +3,20 @@ package userGUI.text;
 import java.awt.Graphics;
 
 import assetManager.Texture;
-import information.Setting;
+import userGUI.Frame;
 import userGUI.Screen;
+import userGUI.taskBar.TaskBar;
 
 /**
- * 
- * @author WYF
  *
  */
 public class Text {
-	
+
 	protected String text;
 	protected int x, y;
-	
+
+	private int tempX, tempY;
+
 	/**
 	 * locationType should only ever be assigned one of these 3 values:
 	 * ""                    text should be relative to the top left corner of screen
@@ -56,36 +57,20 @@ public class Text {
 				break;
 			case "center":
 				for (int i = 0; i < text.length(); i++) {
-					g.drawImage(
-						Texture.getChar((int)text.charAt(i)), 
-						(12 * i) + Setting.getScreenPadding() + (Screen.getScreenLength() - 10 * text.length() - 2 * text.length() + 2) / 2, 
-						Setting.getScreenPadding() + (Screen.getScreenHeight() - 14) / 2, 
-						null
-					);
+					tempX = 12 * i + (Screen.getScreenLength() - 10 * text.length() - 2 * text.length() + 2) / 2;
+					tempY = (Screen.getScreenHeight() - 14) / 2;
+					g.drawImage(Texture.getChar((int)text.charAt(i)), tempX, tempY, null);
 				}
 				break;
 			case "relative to center":
 				for (int i = 0; i < text.length(); i++) {
-					g.drawImage(
-						Texture.getChar((int)text.charAt(i)), 
-						(12 * i) + Setting.getScreenPadding() + (Screen.getScreenLength() - 10 * text.length() - 2 * text.length() + 2) / 2 + x, 
-						Setting.getScreenPadding() + (Screen.getScreenHeight() - 14) / 2 + y, 
-						null
-					);
+					tempX = 12 * i + (Screen.getScreenLength() - 10 * text.length() - 2 * text.length() + 2) / 2 + x;
+					tempY = (Screen.getScreenHeight() - 14) / 2 + y;
+					g.drawImage(Texture.getChar((int)text.charAt(i)), tempX, tempY, null);
 				}
 				break;
 			default:
 				System.err.print("key not found");
-		}
-	}
-	
-	/**
-	 * THIS FUNCTION IS NOT USED
-	 * @param g
-	 */
-	public void drawText(Graphics g) {
-		for (int i = 0; i < text.length(); i++) {
-			g.drawImage(Texture.getChar((int)text.charAt(i)), (12 * i), 0, null);
 		}
 	}
 	

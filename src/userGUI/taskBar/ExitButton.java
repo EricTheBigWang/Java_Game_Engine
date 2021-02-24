@@ -5,7 +5,7 @@ import java.awt.Graphics;
 
 import assetManager.Data;
 import assetManager.Texture;
-import information.Setting;
+import userGUI.Frame;
 import userGUI.button.ImageButton;
 
 public class ExitButton extends ImageButton {
@@ -14,10 +14,10 @@ public class ExitButton extends ImageButton {
 	
 	private ExitButton() {
 		super(
-			Setting.getFrameLength() - TaskBar.BUTTONWIDTH - 2 * Setting.getBorderLength(), 
+			Frame.getLength() - TaskBar.BUTTONWIDTH - 2 * Frame.getBorderLength(),
 			0,
 			TaskBar.BUTTONWIDTH, 
-			Setting.getTaskBarHeight()
+			TaskBar.getInstance().getHeight()
 		);
 		
 		setColors(new Color(240, 240, 240), new Color(225, 225, 225), new Color(210, 210, 210));
@@ -55,6 +55,6 @@ public class ExitButton extends ImageButton {
 	}
 	
 	public void setLocation() {
-		super.setLocation(Setting.getFrameLength() - TaskBar.BUTTONWIDTH, 0);
+		super.setLocation(Frame.getLength() - TaskBar.BUTTONWIDTH, 0);
 	}
 }

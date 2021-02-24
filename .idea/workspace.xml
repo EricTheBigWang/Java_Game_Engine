@@ -1,13 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3920fa0a-d203-4e02-9c09-25f711541eeb" name="Default Changelist" comment="" />
+    <list default="true" id="3920fa0a-d203-4e02-9c09-25f711541eeb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/data/levelData.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/sound/bensound-tenderness.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/texture/taskBar/exit_icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/texture/taskBar/maximize_icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/texture/taskBar/minimize_icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/texture/userGUI/font/spritesheet_font_11_15.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/Data.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/FileLoader$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/FileLoader.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/Sound.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/SpriteSheet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/SpriteSheetLoader.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/Texture.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/command/Command.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/command/FileCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/command/LoadPNGCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/command/LoadProductCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/factory/Factory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/information/Setting.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/KeyInput$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/KeyInput.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/MouseInput$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/MouseInput$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/MouseInput$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/MouseInput.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/loop/Loop.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/main/Main$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/main/Main$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/main/Main$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/main/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/page/MyPage.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/toolkit/Debug.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/toolkit/Pair.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/toolkit/Tools.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/toolkit/Tuple.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/Page.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/Screen.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/button/Button$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/button/Button.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/button/ImageButton$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/button/ImageButton.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/entity/ClickableEntity$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/entity/ClickableEntity$State.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/entity/ClickableEntity.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/entity/DraggableEntity.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/ExitButton.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/MaximizeButton$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/MaximizeButton.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/MinimizeButton$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/MinimizeButton.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/TaskBar$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/TaskBar$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/TaskBar.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/icon/Icon.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/text/CenteredString.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/text/Dialogue.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/text/Text.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/text/TypingText.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/factory/Factory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/factory/Factory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/information/Setting.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/loop/Loop.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/loop/Loop.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/Screen.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/Screen.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/ExitButton.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/ExitButton.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MaximizeButton$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MaximizeButton$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MaximizeButton.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MaximizeButton.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MinimizeButton.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MinimizeButton.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/text/Text.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/text/Text.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assetManager/Sound.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/assetManager/Sound.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/factory/Factory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/factory/Factory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/information/Setting.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/loop/Loop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/loop/Loop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/userGUI/Screen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/Screen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/userGUI/taskBar/ExitButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/taskBar/ExitButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/userGUI/taskBar/MaximizeButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/taskBar/MaximizeButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/userGUI/taskBar/MinimizeButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/taskBar/MinimizeButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/userGUI/taskBar/TaskBar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/taskBar/TaskBar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/userGUI/text/Text.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/text/Text.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1orh82nEOxkyF8ei1kvsbbPAnDG" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="flattenPackages" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -16,6 +115,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
   </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -47,5 +147,16 @@
       <updated>1614050456479</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

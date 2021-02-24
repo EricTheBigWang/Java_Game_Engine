@@ -12,7 +12,7 @@ import javax.sound.sampled.FloatControl;
  * 
  * @author Yi Feng Wang
  */
-// TODO: make sound class extend from the fileloader
+// TODO: make sound class extend from the file loader
 public class Sound {
 	
 	private static Sound sound;

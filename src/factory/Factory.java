@@ -20,6 +20,7 @@ public class Factory extends FileLoader {
 				
 			} catch (Throwable e) {
 				System.err.println("Product " + productType + " could not be created.");
+				e.printStackTrace();
 				return null;
 	        }
 		}

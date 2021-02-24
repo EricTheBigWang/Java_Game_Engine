@@ -1,0 +1,937 @@
+Index: src/userGUI/taskBar/TaskBar.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package userGUI.taskBar;\r\n\r\nimport java.awt.Color;\r\nimport java.awt.Dimension;\r\nimport java.awt.Graphics;\r\nimport java.awt.event.MouseAdapter;\r\nimport java.awt.event.MouseEvent;\r\nimport java.awt.event.MouseMotionAdapter;\r\n\r\nimport javax.swing.JPanel;\r\nimport javax.swing.SwingUtilities;\r\n\r\nimport information.Setting;\r\nimport main.Main;\r\nimport userGUI.taskBar.icon.Icon;\r\nimport userGUI.text.Text;\r\n\r\n@SuppressWarnings(\"serial\")\r\npublic class TaskBar extends JPanel {\r\n\t\r\n\tpublic static TaskBar taskBar;\r\n\t\r\n\tprotected static final double GOLDENRATIO = 1.6180339887498948420;\r\n\tprotected static final int BUTTONWIDTH = (int) (Setting.getTaskBarHeight() * GOLDENRATIO);\r\n\tprotected static final int BUTTONSPACING = 0;\r\n\t\r\n\tprivate static boolean isMoving;\r\n\tprivate static boolean isFocused;\r\n\r\n\tprivate static int mouseX, mouseY;\t\r\n\tprivate static boolean LMB;\r\n\tprivate static boolean RMB;\r\n\tprivate static int xPos, yPos;\r\n\t\r\n\tprivate static final Text TASKBARTEXT = new Text(\"GAME\", 42, 8);\r\n\t\r\n\tprivate TaskBar() {\r\n\t\tsetPreferredSize(\t\r\n\t\t\tnew Dimension(\r\n\t\t\t\tSetting.getFrameLength() - 2 * Setting.getBorderLength(), \r\n\t\t\t\tSetting.getTaskBarHeight()\r\n\t\t\t)\r\n\t\t);\r\n\t\t\r\n\t\tTaskBar.isMoving = false;\r\n\t\t\r\n\t\taddMouseListener(\r\n\t\t\tnew MouseAdapter() {\r\n\t\t\t\t@Override\r\n\t\t\t\tpublic void mousePressed(MouseEvent e) {\r\n\t\t\t\t\txPos = e.getX();\r\n\t\t\t\t\tyPos = e.getY();\r\n\t\t\t\t\tLMB = LMB || SwingUtilities.isLeftMouseButton(e);\r\n\t\t\t\t\tRMB = RMB || SwingUtilities.isRightMouseButton(e);\r\n\t\t\t\t}\r\n\t\t\t\t\r\n\t\t\t\t@Override\r\n\t\t\t\tpublic void mouseReleased(MouseEvent e) {\r\n\t\t\t\t\tLMB = LMB && !SwingUtilities.isLeftMouseButton(e);\r\n\t\t\t\t\tRMB = RMB && !SwingUtilities.isRightMouseButton(e);\r\n\t\t\t\t}\r\n\t\t\t\t\r\n\t\t\t\t@Override\r\n\t\t\t\tpublic void mouseEntered(MouseEvent e) {\r\n\t\t\t\t\tisFocused = true;\r\n\t\t\t\t}\r\n\r\n\t\t\t\t@Override\r\n\t\t\t\tpublic void mouseExited(MouseEvent e) {\r\n\t\t\t\t\tisFocused = false;\r\n\t\t\t\t\tmouseX = -1;\r\n\t\t\t\t\tmouseY = -1;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t);\r\n\t\t\r\n\t\taddMouseMotionListener(\r\n\t\t\tnew MouseMotionAdapter() {\r\n\t\t\t\t@Override\r\n\t\t\t\tpublic void mouseDragged(MouseEvent e) {\r\n\t\t\t\t\tmouseX = e.getX();\r\n\t\t\t\t\tmouseY = e.getY();\r\n\t\t\t\t\tif (0 <= xPos && xPos <= getWidth() - 3 * BUTTONWIDTH - 2 * BUTTONSPACING) {\r\n\t\t\t\t\t\tMain.getFrame().setLocation(\r\n\t\t\t\t\t\t\tMain.getFrame().getX() + e.getX() - xPos, \r\n\t\t\t\t\t\t\tMain.getFrame().getY() + e.getY() - yPos\r\n\t\t\t\t\t\t);\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\t\r\n\t\t\t\t@Override\r\n\t\t\t\tpublic void mouseMoved(MouseEvent e) {\r\n\t\t\t\t\tmouseX = e.getX();\r\n\t\t\t\t\tmouseY = e.getY();\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t);\r\n\t}\r\n\t\r\n\tpublic static TaskBar getInstance() {\r\n\t\tif (taskBar == null)\r\n\t\t\ttaskBar = new TaskBar();\r\n\t\treturn taskBar;\r\n\t}\r\n\t\r\n\tpublic void update () {\r\n\t\tIcon.getInstance().update();\r\n\t\tExitButton.getInstance().update();\r\n\t\tMaximizeButton.getInstance().update();\r\n\t\tMinimizeButton.getInstance().update();\r\n\t\t\r\n\t\t// TODO, check for border resizing\r\n\t\tExitButton.getInstance().setLocation();\r\n\t\tMaximizeButton.getInstance().setLocation();\r\n\t\tMinimizeButton.getInstance().setLocation();\r\n\t\t\r\n\t\trepaint();\r\n\t}\r\n\t\r\n\t@Override\r\n    protected void paintComponent(Graphics g) {\r\n        super.paintComponent(g);\r\n        \r\n        g.setColor(new Color(240, 240, 240));\r\n        g.fillRect(0, 0, getWidth(), getHeight());\r\n\t\t\r\n        TASKBARTEXT.render(g);\r\n        \r\n        Icon.getInstance().render(g);\r\n        ExitButton.getInstance().render(g);\r\n\t\tMaximizeButton.getInstance().render(g);\r\n\t\tMinimizeButton.getInstance().render(g);\r\n    }\r\n\t\r\n\tpublic static double getGoldenratio() {\r\n\t\treturn GOLDENRATIO;\r\n\t}\r\n\t\r\n\tpublic static int getButtonwidth() {\r\n\t\treturn BUTTONWIDTH;\r\n\t}\r\n\t\r\n\tpublic static boolean isFocused() {\r\n\t\treturn isFocused;\r\n\t}\r\n\r\n\tpublic static boolean LMB() {\r\n\t\treturn LMB;\r\n\t}\r\n\r\n\tpublic static boolean RMB() {\r\n\t\treturn RMB;\r\n\t}\r\n\r\n\tpublic static void setFocused(boolean isFocused) {\r\n\t\tTaskBar.isFocused = isFocused;\r\n\t}\r\n\r\n\tpublic static int getButtonSpacing() {\r\n\t\treturn BUTTONSPACING;\r\n\t}\r\n\r\n\tpublic static boolean isMoving () {\r\n\t\treturn TaskBar.isMoving;\r\n\t}\r\n\t\r\n\tpublic static int getMouseX() {\r\n\t\treturn mouseX;\r\n\t}\r\n\r\n\tpublic static int getMouseY() {\r\n\t\treturn mouseY;\r\n\t}\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/userGUI/taskBar/TaskBar.java b/src/userGUI/taskBar/TaskBar.java
+--- a/src/userGUI/taskBar/TaskBar.java	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ b/src/userGUI/taskBar/TaskBar.java	(date 1614130372639)
+@@ -10,8 +10,8 @@
+ import javax.swing.JPanel;
+ import javax.swing.SwingUtilities;
+ 
+-import information.Setting;
+ import main.Main;
++import userGUI.Frame;
+ import userGUI.taskBar.icon.Icon;
+ import userGUI.text.Text;
+ 
+@@ -19,11 +19,13 @@
+ public class TaskBar extends JPanel {
+ 	
+ 	public static TaskBar taskBar;
+-	
++
++	private static final int TASKBARHEIGHT = 30;
++
+ 	protected static final double GOLDENRATIO = 1.6180339887498948420;
+-	protected static final int BUTTONWIDTH = (int) (Setting.getTaskBarHeight() * GOLDENRATIO);
++	protected static final int BUTTONWIDTH = (int) (TASKBARHEIGHT * GOLDENRATIO);
+ 	protected static final int BUTTONSPACING = 0;
+-	
++
+ 	private static boolean isMoving;
+ 	private static boolean isFocused;
+ 
+@@ -35,11 +37,18 @@
+ 	private static final Text TASKBARTEXT = new Text("GAME", 42, 8);
+ 	
+ 	private TaskBar() {
+-		setPreferredSize(	
+-			new Dimension(
+-				Setting.getFrameLength() - 2 * Setting.getBorderLength(), 
+-				Setting.getTaskBarHeight()
+-			)
++		setSize(
++				new Dimension(
++						Frame.getLength() - 2 * Frame.getBorderLength(),
++						TASKBARHEIGHT
++				)
++		);
++
++		setPreferredSize(
++				new Dimension(
++						Frame.getLength() - 2 * Frame.getBorderLength(),
++						TASKBARHEIGHT
++				)
+ 		);
+ 		
+ 		TaskBar.isMoving = false;
+@@ -108,8 +117,7 @@
+ 		ExitButton.getInstance().update();
+ 		MaximizeButton.getInstance().update();
+ 		MinimizeButton.getInstance().update();
+-		
+-		// TODO, check for border resizing
++
+ 		ExitButton.getInstance().setLocation();
+ 		MaximizeButton.getInstance().setLocation();
+ 		MinimizeButton.getInstance().setLocation();
+@@ -131,15 +139,15 @@
+ 		MaximizeButton.getInstance().render(g);
+ 		MinimizeButton.getInstance().render(g);
+     }
+-	
+-	public static double getGoldenratio() {
++
++	public static double getGoldenRatio() {
+ 		return GOLDENRATIO;
+ 	}
+-	
+-	public static int getButtonwidth() {
++
++	public static int getButtonWidth() {
+ 		return BUTTONWIDTH;
+ 	}
+-	
++
+ 	public static boolean isFocused() {
+ 		return isFocused;
+ 	}
+Index: src/userGUI/taskBar/MaximizeButton.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package userGUI.taskBar;\r\n\r\nimport java.awt.Color;\r\nimport java.awt.Dimension;\r\nimport java.awt.Graphics;\r\nimport java.awt.event.ActionEvent;\r\nimport java.awt.event.ActionListener;\r\n\r\nimport javax.swing.JFrame;\r\n\r\nimport assetManager.Texture;\r\nimport information.Setting;\r\nimport main.Main;\r\nimport userGUI.button.ImageButton;\r\n\r\npublic class MaximizeButton extends ImageButton {\r\n\t\r\n\tprivate static MaximizeButton maximizeButton;\r\n\t\r\n\tprivate MaximizeButton() {\r\n\t\tsuper(\r\n\t\t\tSetting.getFrameLength() - TaskBar.BUTTONSPACING - 2 * TaskBar.BUTTONWIDTH,\r\n\t\t\t0,\r\n\t\t\tTaskBar.BUTTONWIDTH, \r\n\t\t\tSetting.getTaskBarHeight()\r\n\t\t);\r\n\t\t\r\n\t\tsetColors(new Color(240, 240, 240), new Color(225, 225, 225), new Color(210, 210, 210));\r\n\t\t\r\n\t\tsetSprite(Texture.get(\"maximize_icon\"));\r\n\t\t\r\n\t\taddActionListener(new ActionListener () {\r\n\t\t\tpublic void actionPerformed(ActionEvent e) {\r\n\t\t\t\tSetting.setMaximized(!Setting.isMaximized());\r\n\t\t\t\t\r\n\t\t\t\tif (Setting.isMaximized()) {\r\n\t\t\t\t\tMain.getFrame().setLocation(0, 0);\r\n\t\t\t\t\t\r\n\t\t\t\t\tSetting.setDefaultFrameHeight(Setting.getFrameHeight());\r\n\t\t\t\t\tSetting.setDefaultFrameLength(Setting.getFrameLength());\r\n\t\t\t\t\t\r\n\t\t\t\t\tMain.getFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);\r\n\t\t\t\t\r\n\t\t\t\t} else {\r\n\t\t\t\t\tMain.getFrame().setSize(\r\n\t\t\t\t\t\tnew Dimension(\r\n\t\t\t\t\t\t\tSetting.getDefaultFrameLength(), \r\n\t\t\t\t\t\t\tSetting.getDefaultFrameHeight()\r\n\t\t\t\t\t\t)\r\n\t\t\t\t\t);\r\n\t\t\t\t\t\r\n\t\t\t\t\tSetting.setFrameLength(Main.getLength());\r\n\t\t\t    \tSetting.setFrameHeight(Main.getHeight());\r\n\t\t\t\t\t\r\n\t\t\t\t\tMain.getFrame().setLocationRelativeTo(null);\r\n\t\t\t\t}\r\n\t\t\t\t\r\n\t\t\t\tSystem.out.println(\"Maximized\");\r\n\t\t\t}\r\n\t\t});\r\n\t}\r\n\t\r\n\tpublic static MaximizeButton getInstance() {\r\n\t\tif (maximizeButton == null)\r\n\t\t\tmaximizeButton = new MaximizeButton();\r\n\t\treturn maximizeButton;\r\n\t}\r\n\t\r\n\tpublic void update () {\r\n\t\tif (TaskBar.isFocused() && clickBox.contains(TaskBar.getMouseX(), TaskBar.getMouseY())) {\r\n\t\t\tif (TaskBar.LMB()) {\r\n\t\t\t\tcurrentState = State.PRESSED;\r\n\t\t\t} else {\r\n\t\t\t\tif (currentState == State.PRESSED) {\r\n\t\t\t\t\tfor (ActionListener all : actionListeners) {\r\n\t\t\t\t\t\tall.actionPerformed(null);\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\tcurrentState = State.HOVERED;\r\n\t\t\t}\r\n\t\t} else {\r\n\t\t\tcurrentState = State.RELEASED;\r\n\t\t}\r\n\t}\r\n\t\r\n\tpublic void render (Graphics g) {\r\n\t\tsuper.render(g);\r\n\t}\r\n\t\r\n\tpublic void setLocation() {\r\n\t\tsuper.setLocation(\r\n\t\t\tSetting.getFrameLength() - TaskBar.BUTTONSPACING - 2 * TaskBar.BUTTONWIDTH,\r\n\t\t\t0\r\n\t\t);\r\n\t}\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/userGUI/taskBar/MaximizeButton.java b/src/userGUI/taskBar/MaximizeButton.java
+--- a/src/userGUI/taskBar/MaximizeButton.java	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ b/src/userGUI/taskBar/MaximizeButton.java	(date 1614127666478)
+@@ -9,8 +9,8 @@
+ import javax.swing.JFrame;
+ 
+ import assetManager.Texture;
+-import information.Setting;
+ import main.Main;
++import userGUI.Frame;
+ import userGUI.button.ImageButton;
+ 
+ public class MaximizeButton extends ImageButton {
+@@ -19,10 +19,10 @@
+ 	
+ 	private MaximizeButton() {
+ 		super(
+-			Setting.getFrameLength() - TaskBar.BUTTONSPACING - 2 * TaskBar.BUTTONWIDTH,
++			Frame.getLength() - TaskBar.BUTTONSPACING - 2 * TaskBar.BUTTONWIDTH,
+ 			0,
+-			TaskBar.BUTTONWIDTH, 
+-			Setting.getTaskBarHeight()
++			TaskBar.BUTTONWIDTH,
++			TaskBar.getInstance().getHeight()
+ 		);
+ 		
+ 		setColors(new Color(240, 240, 240), new Color(225, 225, 225), new Color(210, 210, 210));
+@@ -31,26 +31,22 @@
+ 		
+ 		addActionListener(new ActionListener () {
+ 			public void actionPerformed(ActionEvent e) {
+-				Setting.setMaximized(!Setting.isMaximized());
++				Frame.setMaximized(!Frame.isMaximized());
+ 				
+-				if (Setting.isMaximized()) {
++				if (Frame.isMaximized()) {
+ 					Main.getFrame().setLocation(0, 0);
+-					
+-					Setting.setDefaultFrameHeight(Setting.getFrameHeight());
+-					Setting.setDefaultFrameLength(Setting.getFrameLength());
++
++					// TODO Fix
++					// Frame.setDefaultHeight(Frame.getHeight());
++					// Frame.setDefaultLength(Frame.getLength());
+ 					
+ 					Main.getFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
+ 				
+ 				} else {
+-					Main.getFrame().setSize(
+-						new Dimension(
+-							Setting.getDefaultFrameLength(), 
+-							Setting.getDefaultFrameHeight()
+-						)
+-					);
++					Main.getFrame().setSize(new Dimension(Frame.getDefaultLength(), Frame.getDefaultHeight()));
+ 					
+-					Setting.setFrameLength(Main.getLength());
+-			    	Setting.setFrameHeight(Main.getHeight());
++					Frame.setLength(Main.getLength());
++			    	Frame.setHeight(Main.getHeight());
+ 					
+ 					Main.getFrame().setLocationRelativeTo(null);
+ 				}
+@@ -89,8 +85,8 @@
+ 	
+ 	public void setLocation() {
+ 		super.setLocation(
+-			Setting.getFrameLength() - TaskBar.BUTTONSPACING - 2 * TaskBar.BUTTONWIDTH,
+-			0
++				Frame.getLength() - TaskBar.BUTTONSPACING - 2 * TaskBar.BUTTONWIDTH,
++				0
+ 		);
+ 	}
+ }
+Index: src/userGUI/taskBar/MinimizeButton.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package userGUI.taskBar;\r\n\r\nimport java.awt.Color;\r\nimport java.awt.Graphics;\r\nimport java.awt.event.ActionEvent;\r\nimport java.awt.event.ActionListener;\r\n\r\nimport javax.swing.JFrame;\r\n\r\nimport assetManager.Texture;\r\nimport information.Setting;\r\nimport main.Main;\r\nimport userGUI.button.ImageButton;\r\n\r\npublic class MinimizeButton extends ImageButton{\r\n\t\r\n\tprivate static MinimizeButton minimizeButton;\r\n\t\r\n\tprivate MinimizeButton() {\r\n\t\tsuper(\r\n\t\t\tSetting.getFrameLength() - 2 * TaskBar.BUTTONSPACING - 3 * TaskBar.BUTTONWIDTH,\r\n\t\t\t0, \r\n\t\t\tTaskBar.BUTTONWIDTH, \r\n\t\t\tSetting.getTaskBarHeight()\r\n\t\t);\r\n\t\t\r\n\t\tsetColors(new Color(240, 240, 240), new Color(225, 225, 225), new Color(210, 210, 210));\r\n\t\tsetSprite(Texture.get(\"minimize_icon\"));\r\n\t\t\r\n\t\taddActionListener(new ActionListener () {\r\n\t\t\tpublic void actionPerformed(ActionEvent e) {\r\n\t\t\t\tMain.getFrame().setExtendedState(JFrame.ICONIFIED);\r\n\t\t\t\tSystem.out.println(\"Minimized\");\r\n\t\t\t}\r\n\t\t});\r\n\t}\r\n\t\r\n\tpublic static MinimizeButton getInstance() {\r\n\t\tif (minimizeButton == null)\r\n\t\t\tminimizeButton = new MinimizeButton();\r\n\t\treturn minimizeButton;\r\n\t}\r\n\t\r\n\tpublic void update() {\r\n\t\tif (TaskBar.isFocused() && clickBox.contains(TaskBar.getMouseX(), TaskBar.getMouseY())) {\r\n\t\t\tif (TaskBar.LMB()) {\r\n\t\t\t\tcurrentState = State.PRESSED;\r\n\t\t\t} else {\r\n\t\t\t\tif (currentState == State.PRESSED) {\r\n\t\t\t\t\tfor (ActionListener all : actionListeners) {\r\n\t\t\t\t\t\tall.actionPerformed(null);\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\tcurrentState = State.HOVERED;\r\n\t\t\t}\r\n\t\t} else {\r\n\t\t\tcurrentState = State.RELEASED;\r\n\t\t}\r\n\t}\r\n\t\r\n\tpublic void render(Graphics g) {\r\n\t\tsuper.render(g);\r\n\t}\r\n\t\r\n\tpublic void setLocation() {\r\n\t\tsuper.setLocation(\r\n\t\t\tSetting.getFrameLength() - 2 * TaskBar.BUTTONSPACING - 3 * TaskBar.BUTTONWIDTH, \r\n\t\t\t0\r\n\t\t);\r\n\t}\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/userGUI/taskBar/MinimizeButton.java b/src/userGUI/taskBar/MinimizeButton.java
+--- a/src/userGUI/taskBar/MinimizeButton.java	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ b/src/userGUI/taskBar/MinimizeButton.java	(date 1614127833429)
+@@ -8,8 +8,8 @@
+ import javax.swing.JFrame;
+ 
+ import assetManager.Texture;
+-import information.Setting;
+ import main.Main;
++import userGUI.Frame;
+ import userGUI.button.ImageButton;
+ 
+ public class MinimizeButton extends ImageButton{
+@@ -18,10 +18,10 @@
+ 	
+ 	private MinimizeButton() {
+ 		super(
+-			Setting.getFrameLength() - 2 * TaskBar.BUTTONSPACING - 3 * TaskBar.BUTTONWIDTH,
++			Frame.getLength() - 2 * TaskBar.BUTTONSPACING - 3 * TaskBar.BUTTONWIDTH,
+ 			0, 
+-			TaskBar.BUTTONWIDTH, 
+-			Setting.getTaskBarHeight()
++			TaskBar.BUTTONWIDTH,
++			TaskBar.getInstance().getHeight()
+ 		);
+ 		
+ 		setColors(new Color(240, 240, 240), new Color(225, 225, 225), new Color(210, 210, 210));
+@@ -64,7 +64,7 @@
+ 	
+ 	public void setLocation() {
+ 		super.setLocation(
+-			Setting.getFrameLength() - 2 * TaskBar.BUTTONSPACING - 3 * TaskBar.BUTTONWIDTH, 
++			Frame.getLength() - 2 * TaskBar.BUTTONSPACING - 3 * TaskBar.BUTTONWIDTH,
+ 			0
+ 		);
+ 	}
+Index: src/userGUI/Screen.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package userGUI;\r\n\r\nimport java.awt.*;\r\nimport java.util.ArrayList;\r\nimport java.util.HashMap;\r\n\r\nimport javax.swing.JPanel;\r\n\r\nimport assetManager.Sound;\r\nimport factory.Factory;\r\nimport information.Setting;\r\nimport input.MouseInput;\r\nimport toolkit.Debug;\r\nimport toolkit.Tools;\r\n\r\n/**\r\n * A class that manages and renders all objects in the program.\r\n * \r\n * @author  Yi Feng Wang\r\n * @version 1.0\r\n * @since   2020-04-28 \r\n */\r\n@SuppressWarnings(\"serial\")\r\npublic class Screen extends JPanel {\r\n\t\r\n\tprivate static Screen screen;\r\n\t\r\n\t/**\r\n\t * Accounts for all the pages.\r\n\t */\r\n\tprivate static HashMap <String, Page> pages;\r\n\tprivate static String currentPage;\r\n\t\r\n\t/**\r\n\t * Dimensions of rendered area.\r\n\t */\r\n\tprivate static int screenX;\r\n\tprivate static int screenY;\r\n\tprivate static int screenLength;\r\n\tprivate static int screenHeight;\r\n\t\r\n\t/**\r\n\t * Accounts for transition between pages.\r\n\t */\r\n\tprivate static boolean isTransitioning;\r\n\tprivate static int transitionTimer;\r\n\tprivate static final double TRANSITIONDURATION = 10.0;\r\n\r\n\tprivate static String endPage;\r\n\tprivate static ArrayList<Integer> opacities;\r\n\t\r\n\t/**\r\n\t * Screen constructor.\r\n\t */\r\n\tprivate Screen() {\r\n\t\topacities = new ArrayList<Integer>();\r\n\t\tfor (int i = 0; i < 2 * TRANSITIONDURATION; i++) {\r\n\t\t\topacities.add(\r\n\t\t\t\tTools.ensureRange(\r\n\t\t\t\t\t(int) (255 * Math.sin(Math.PI * i / (2.0 * TRANSITIONDURATION))), 0, 255\r\n\t\t\t\t)\r\n\t\t\t);\r\n\t\t}\r\n\t\t\r\n\t\tScreen.pages = new HashMap<String, Page>();\r\n\t\t\r\n\t\tscreenHeight = 288;\r\n\t\tscreenLength = 288;\r\n\t}\r\n\t\r\n\t/**\r\n\t * Singleton instance of the screen.\r\n\t * \r\n\t * @return  singleton instance\r\n\t */\r\n\tpublic static Screen getInstance() {\r\n\t\tif (screen == null) {\r\n\t\t\tscreen = new Screen();\r\n\t\t\tloadPages();\r\n\t\t}\r\n\t\treturn screen;\r\n\t}\r\n\t\r\n\t/**\r\n\t * Reset all attribute values of objects to their default values.\r\n\t */\r\n\tpublic static void reset() {\r\n\t\tif (pages.get(currentPage) != null) {\r\n\t\t\tpages.get(currentPage).reset();\r\n\t\t}\r\n\t}\r\n\t\r\n\t/**\r\n\t * Update all objects on the screen.\r\n\t */\r\n\tpublic void update() {\r\n\t\t// Sound.loopClip(\"background\");\r\n\r\n\t\tscreenX = (Setting.getFrameLength() - screenLength) / 2;\r\n\t\tscreenY = (Setting.getFrameHeight() - screenHeight - Setting.getTaskBarHeight()) / 2;\r\n\t\t\t\t\r\n\t\tif (isTransitioning) {\r\n\t\t\ttransitionTimer++;\r\n\t\t\tif (transitionTimer == TRANSITIONDURATION) {\r\n\t\t\t\treset();\r\n\t\t\t\tcurrentPage = endPage;\r\n\t\t\t}\r\n\t\t\t\r\n\t\t\tif (transitionTimer == (2.0 * TRANSITIONDURATION)) {\r\n\t\t\t\ttransitionTimer = 0;\r\n\t\t\t\tisTransitioning = false;\r\n\t\t\t}\r\n\t\t}\r\n\t\t\r\n\t\tif (pages.get(currentPage) != null) {\r\n\t\t\tpages.get(currentPage).update();\r\n\t\t}\r\n\t\t\r\n\t\tDebug.update();\r\n\t\trepaint();\r\n\t}\r\n\t\r\n\t/**\r\n\t * Render objects on the screen regardless of the current page.\r\n\t */\r\n\t@Override\r\n\tpublic void paintComponent(Graphics g) {\r\n\t\tsuper.paintComponent(g);\r\n\t\t\r\n\t\t((Graphics2D) g).setRenderingHint(\r\n\t\t\tRenderingHints.KEY_ANTIALIASING, \r\n\t\t\tRenderingHints.VALUE_ANTIALIAS_ON\r\n\t\t);\r\n\t\t\r\n\t\t((Graphics2D) g).setRenderingHint(\r\n\t\t\tRenderingHints.KEY_COLOR_RENDERING, \r\n\t\t\tRenderingHints.VALUE_COLOR_RENDER_QUALITY\r\n\t\t);\r\n\t\t\r\n\t\t((Graphics2D) g).setRenderingHint(\r\n\t\t\tRenderingHints.KEY_ALPHA_INTERPOLATION, \r\n\t\t\tRenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY\r\n\t\t);\r\n\t\t\r\n\t\t((Graphics2D) g).setRenderingHint(\r\n\t\t\tRenderingHints.KEY_RENDERING, \r\n\t\t\tRenderingHints.VALUE_RENDER_QUALITY\r\n\t\t);\r\n\t\t\r\n\t\t// Fill the game screen with a default color\r\n\t\tg.translate(screenX, screenY);\r\n\t\tg.setColor(new Color(255, 255, 255));\r\n\t\tg.fillRect(0, 0, screenLength, screenHeight);\r\n\t\trender(g);\r\n\t\t\r\n\t\tg.translate(-screenX, -screenY);\r\n\t\tDebug.render(g);\r\n\t\t\r\n\t\tMouseInput.getInstance().render(g);\r\n\t}\r\n\r\n\t/**\r\n\t * Render all objects on the current page.\r\n\t * \r\n\t * @param g  graphics from paintComponent\r\n\t */\r\n\tpublic static void render(Graphics g) {\r\n\t\tif (pages.get(currentPage) != null) {\r\n\t\t\tpages.get(currentPage).render(g);\r\n\t\t}\r\n\t}\r\n\t\r\n\t/**\r\n\t * Load all the pages.\r\n\t */\r\n\tpublic static void loadPages() {\r\n\t\tFactory pageFactory = new Factory(\"src/page\", \".java\");\r\n\t\tfor (HashMap.Entry<String, String> entry : pageFactory.getFileDirectories().entrySet()) {\r\n\t\t    addPage(entry.getKey(), (Page) pageFactory.createProduct(entry.getKey()));\r\n\t\t}\r\n\t\tScreen.init(\"MyPage\");\r\n\t}\r\n\t\r\n\t/**\r\n\t * Add a page to the screen.\r\n\t * \r\n\t * @param pageName  the name of the page to be added\r\n\t * @param page      the page class that corresponds to the name\r\n\t */\r\n\tpublic static void addPage(String pageName, Page page) {\r\n\t\tpages.put(pageName, page);\r\n\t}\r\n\t\r\n\t/**\r\n\t * Transition to the current page to be updated and rendered.\r\n\t * \r\n\t * @param pageName  the name of the page to be transitioned to\r\n\t * @throw           IllegalArgumentExeption is the page is not found.\r\n\t */\r\n\tpublic static void setPage(String pageName) {\r\n\t\tif (!pages.containsKey(pageName))\r\n\t\t\tthrow new IllegalArgumentException(\"Page \" + pageName + \" not found.\");\r\n\t\tisTransitioning = true;\r\n\t\tendPage = pageName;\r\n\t}\r\n\t\r\n\tpublic static int getScreenX() {\r\n\t\treturn screenX;\r\n\t}\r\n\r\n\tpublic static int getScreenY() {\r\n\t\treturn screenY;\r\n\t}\r\n\t\r\n\tpublic static int getScreenLength() {\r\n\t\treturn screenLength;\r\n\t}\r\n\r\n\tpublic static int getScreenHeight() {\r\n\t\treturn screenHeight;\r\n\t}\r\n\r\n\tpublic static String getCurrentPage() {\r\n\t\treturn currentPage;\r\n\t}\r\n\t\r\n\tpublic static void init(String pageName) {\r\n\t\tcurrentPage = pageName;\r\n\t}\r\n\t\r\n\tpublic static ArrayList<Integer> getOpacities() {\r\n\t\treturn opacities;\r\n\t}\r\n\r\n\tpublic static boolean isTransitioning() {\r\n\t\treturn isTransitioning;\r\n\t}\r\n\r\n\tpublic static int getTransitionTimer() {\r\n\t\treturn transitionTimer;\r\n\t}\r\n\r\n\tpublic static void setTransitionTimer(int transitionTimer) {\r\n\t\tScreen.transitionTimer = transitionTimer;\r\n\t}\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/userGUI/Screen.java b/src/userGUI/Screen.java
+--- a/src/userGUI/Screen.java	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ b/src/userGUI/Screen.java	(date 1614130494162)
+@@ -8,10 +8,11 @@
+ 
+ import assetManager.Sound;
+ import factory.Factory;
+-import information.Setting;
+ import input.MouseInput;
++import main.Main;
+ import toolkit.Debug;
+ import toolkit.Tools;
++import userGUI.taskBar.TaskBar;
+ 
+ /**
+  * A class that manages and renders all objects in the program.
+@@ -24,31 +25,23 @@
+ public class Screen extends JPanel {
+ 	
+ 	private static Screen screen;
+-	
+-	/**
+-	 * Accounts for all the pages.
+-	 */
++
+ 	private static HashMap <String, Page> pages;
+ 	private static String currentPage;
+-	
+-	/**
+-	 * Dimensions of rendered area.
+-	 */
+-	private static int screenX;
+-	private static int screenY;
+-	private static int screenLength;
+-	private static int screenHeight;
+-	
+-	/**
+-	 * Accounts for transition between pages.
+-	 */
+ 	private static boolean isTransitioning;
+ 	private static int transitionTimer;
+ 	private static final double TRANSITIONDURATION = 10.0;
+-
+ 	private static String endPage;
+ 	private static ArrayList<Integer> opacities;
+-	
++
++	private static final int HORIZONTALPADDING = 0;
++	private static final int VERTICALPADDING = 0;
++
++	private static int screenX;
++	private static int screenY;
++	private static int screenHeight;
++	private static int screenLength;
++
+ 	/**
+ 	 * Screen constructor.
+ 	 */
+@@ -63,9 +56,6 @@
+ 		}
+ 		
+ 		Screen.pages = new HashMap<String, Page>();
+-		
+-		screenHeight = 288;
+-		screenLength = 288;
+ 	}
+ 	
+ 	/**
+@@ -94,11 +84,11 @@
+ 	 * Update all objects on the screen.
+ 	 */
+ 	public void update() {
+-		// Sound.loopClip("background");
++		screenX = HORIZONTALPADDING;
++		screenY = VERTICALPADDING;
++		screenLength = Frame.getLength() - 2 * HORIZONTALPADDING;
++		screenHeight = Frame.getHeight() - 2 * VERTICALPADDING - TaskBar.getInstance().getHeight();
+ 
+-		screenX = (Setting.getFrameLength() - screenLength) / 2;
+-		screenY = (Setting.getFrameHeight() - screenHeight - Setting.getTaskBarHeight()) / 2;
+-				
+ 		if (isTransitioning) {
+ 			transitionTimer++;
+ 			if (transitionTimer == TRANSITIONDURATION) {
+@@ -138,7 +128,7 @@
+ 		);
+ 		
+ 		((Graphics2D) g).setRenderingHint(
+-			RenderingHints.KEY_ALPHA_INTERPOLATION, 
++			RenderingHints.KEY_ALPHA_INTERPOLATION,
+ 			RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY
+ 		);
+ 		
+@@ -146,13 +136,15 @@
+ 			RenderingHints.KEY_RENDERING, 
+ 			RenderingHints.VALUE_RENDER_QUALITY
+ 		);
+-		
++
++		g.setColor(new Color(25, 25, 25));
++		g.fillRect(0, 0, Main.getLength(), Main.getHeight());
++
+ 		// Fill the game screen with a default color
+ 		g.translate(screenX, screenY);
+ 		g.setColor(new Color(255, 255, 255));
+ 		g.fillRect(0, 0, screenLength, screenHeight);
+ 		render(g);
+-		
+ 		g.translate(-screenX, -screenY);
+ 		Debug.render(g);
+ 		
+@@ -195,7 +187,7 @@
+ 	 * Transition to the current page to be updated and rendered.
+ 	 * 
+ 	 * @param pageName  the name of the page to be transitioned to
+-	 * @throw           IllegalArgumentExeption is the page is not found.
++	 * @throw           IllegalArgumentException is the page is not found.
+ 	 */
+ 	public static void setPage(String pageName) {
+ 		if (!pages.containsKey(pageName))
+@@ -243,4 +235,12 @@
+ 	public static void setTransitionTimer(int transitionTimer) {
+ 		Screen.transitionTimer = transitionTimer;
+ 	}
++
++	public static final int getVerticalPadding() {
++		return VERTICALPADDING;
++	}
++
++	public static final int getHorizontalPadding() {
++		return HORIZONTALPADDING;
++	}
+ }
+\ No newline at end of file
+Index: src/userGUI/taskBar/ExitButton.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package userGUI.taskBar;\r\n\r\nimport java.awt.Color;\r\nimport java.awt.Graphics;\r\n\r\nimport assetManager.Data;\r\nimport assetManager.Texture;\r\nimport information.Setting;\r\nimport userGUI.button.ImageButton;\r\n\r\npublic class ExitButton extends ImageButton {\r\n\t\r\n\tprivate static ExitButton exitButton;\r\n\t\r\n\tprivate ExitButton() {\r\n\t\tsuper(\r\n\t\t\tSetting.getFrameLength() - TaskBar.BUTTONWIDTH - 2 * Setting.getBorderLength(), \r\n\t\t\t0,\r\n\t\t\tTaskBar.BUTTONWIDTH, \r\n\t\t\tSetting.getTaskBarHeight()\r\n\t\t);\r\n\t\t\r\n\t\tsetColors(new Color(240, 240, 240), new Color(225, 225, 225), new Color(210, 210, 210));\r\n\t\t\r\n\t\tsetSprite(Texture.get(\"exit_icon\"));\r\n\t}\r\n\t\r\n\tpublic static ExitButton getInstance() {\r\n\t\tif (exitButton == null)\r\n\t\t\texitButton = new ExitButton();\r\n\t\treturn exitButton;\r\n\t}\r\n\t\r\n\tpublic void update() {\r\n\t\tif (TaskBar.isFocused() && clickBox.contains(TaskBar.getMouseX(), TaskBar.getMouseY())) {\r\n\t\t\tif (TaskBar.LMB()) {\r\n\t\t\t\tcurrentState = State.PRESSED;\r\n\t\t\t} else {\r\n\t\t\t\tif (currentState == State.PRESSED) {\r\n\t\t\t\t\t\r\n\t\t\t\t\t// TODO find way of avoiding IndexError\r\n\t\t\t\t\tSystem.out.println(\"Exited\");\r\n\t\t\t\t\tData.writeData();\r\n\t\t\t\t\tSystem.exit(0);\r\n\t\t\t\t}\r\n\t\t\t\tcurrentState = State.HOVERED;\r\n\t\t\t}\r\n\t\t} else {\r\n\t\t\tcurrentState = State.RELEASED;\r\n\t\t}\r\n\t}\r\n\t\r\n\tpublic void render(Graphics g) {\r\n\t\tsuper.render(g);\r\n\t}\r\n\t\r\n\tpublic void setLocation() {\r\n\t\tsuper.setLocation(Setting.getFrameLength() - TaskBar.BUTTONWIDTH, 0);\r\n\t}\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/userGUI/taskBar/ExitButton.java b/src/userGUI/taskBar/ExitButton.java
+--- a/src/userGUI/taskBar/ExitButton.java	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ b/src/userGUI/taskBar/ExitButton.java	(date 1614127188318)
+@@ -5,7 +5,7 @@
+ 
+ import assetManager.Data;
+ import assetManager.Texture;
+-import information.Setting;
++import userGUI.Frame;
+ import userGUI.button.ImageButton;
+ 
+ public class ExitButton extends ImageButton {
+@@ -14,10 +14,10 @@
+ 	
+ 	private ExitButton() {
+ 		super(
+-			Setting.getFrameLength() - TaskBar.BUTTONWIDTH - 2 * Setting.getBorderLength(), 
++			Frame.getLength() - TaskBar.BUTTONWIDTH - 2 * Frame.getBorderLength(),
+ 			0,
+ 			TaskBar.BUTTONWIDTH, 
+-			Setting.getTaskBarHeight()
++			TaskBar.getInstance().getHeight()
+ 		);
+ 		
+ 		setColors(new Color(240, 240, 240), new Color(225, 225, 225), new Color(210, 210, 210));
+@@ -55,6 +55,6 @@
+ 	}
+ 	
+ 	public void setLocation() {
+-		super.setLocation(Setting.getFrameLength() - TaskBar.BUTTONWIDTH, 0);
++		super.setLocation(Frame.getLength() - TaskBar.BUTTONWIDTH, 0);
+ 	}
+ }
+Index: src/loop/Loop.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package loop;\r\n\r\nimport java.awt.event.ActionEvent;\r\nimport java.awt.event.ActionListener;\r\n\r\nimport information.Setting;\r\nimport input.KeyInput;\r\nimport input.MouseInput;\r\nimport userGUI.Screen;\r\nimport userGUI.taskBar.TaskBar;\r\n\r\n/**\r\n * Program loop that runs at 60 updates per second.\r\n * \r\n * @author  Yi Feng Wang\r\n * @version 1.0\r\n * @since   2020-04-28 \r\n */\r\npublic class Loop implements ActionListener {\r\n\t\r\n\tprivate static Loop loop;\r\n\t\r\n\tprivate static double delta;\r\n\tprivate static int updates, reportedUpdates;\r\n\tprivate static int loopsPerSecond, reportedLoops;\r\n\tprivate static long lastTime;\r\n\tprivate static long timer;\r\n\tprivate static long now;\r\n\t\r\n\tprivate static MouseInput mouseInput;\r\n\t\r\n\t/**\r\n\t * Loop constructor.\r\n\t */\r\n\tprivate Loop() {\r\n\t\tmouseInput = MouseInput.getInstance();\r\n\t\tlastTime = System.nanoTime();\r\n\t\ttimer = System.currentTimeMillis();\r\n\t}\r\n\t\r\n\t/**\r\n\t * Singleton instance of the loop.\r\n\t * \r\n\t * @return  singleton instance\r\n\t */\r\n\tpublic static Loop getInstance () {\r\n\t\tif (loop == null)\r\n\t\t\tloop = new Loop();\r\n\t\treturn loop;\r\n\t}\r\n\t\r\n\t/**\r\n\t * Program loop that runs at 60 updates per second.\r\n\t * @param e  Does nothing.\r\n\t */\r\n\t@Override\r\n\tpublic void actionPerformed(ActionEvent e) {\r\n\t\tnow = System.nanoTime();\r\n\t\tdelta += 60.0 * (now - lastTime) / 1000000000;\r\n\t\t\r\n\t\tlastTime = now;\r\n\t\t\r\n\t\tif (delta >= 1) {\r\n\t\t    update();\r\n\t\t\tupdates ++;\r\n\t\t\tdelta --;\r\n\t\t}\r\n\t\t\r\n\t\tloopsPerSecond++;\r\n\t\tif (System.currentTimeMillis() - timer > 1000) {\r\n\t\t\treportedUpdates = updates;\r\n\t\t\treportedLoops = loopsPerSecond;\r\n\t\t\tloopsPerSecond = 0;\r\n\t\t\tupdates = 0;\r\n\t\t\ttimer += 1000;\r\n\t\t}\r\n\t}\r\n\t\r\n\t/**\r\n\t * Update all objects in the application.\r\n\t */\r\n\tpublic static void update() {\r\n\t\tSetting.update();\r\n\t\tmouseInput.update();\r\n\t\tTaskBar.getInstance().update();\r\n\t\tScreen.getInstance().update();\r\n\t\tKeyInput.update();\r\n\t}\r\n\t\r\n\tpublic static int getLoopsPerSecond() {\r\n\t\treturn reportedLoops;\r\n\t}\r\n\r\n\tpublic static void setLoopsPerSecond(int loopsPerSecond) {\r\n\t\tLoop.loopsPerSecond = loopsPerSecond;\r\n\t}\r\n\r\n\tpublic static int getUpdates() {\r\n\t\treturn Loop.reportedUpdates;\r\n\t}\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/loop/Loop.java b/src/loop/Loop.java
+--- a/src/loop/Loop.java	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ b/src/loop/Loop.java	(date 1614128113639)
+@@ -3,9 +3,9 @@
+ import java.awt.event.ActionEvent;
+ import java.awt.event.ActionListener;
+ 
+-import information.Setting;
+ import input.KeyInput;
+ import input.MouseInput;
++import userGUI.Frame;
+ import userGUI.Screen;
+ import userGUI.taskBar.TaskBar;
+ 
+@@ -80,7 +80,7 @@
+ 	 * Update all objects in the application.
+ 	 */
+ 	public static void update() {
+-		Setting.update();
++		Frame.getInstance().update();
+ 		mouseInput.update();
+ 		TaskBar.getInstance().update();
+ 		Screen.getInstance().update();
+Index: src/main/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package main;\r\n\r\nimport java.awt.BorderLayout;\r\nimport java.awt.Color;\r\nimport java.awt.Cursor;\r\nimport java.awt.Dimension;\r\nimport java.awt.Point;\r\nimport java.awt.Toolkit;\r\nimport java.awt.event.WindowAdapter;\r\nimport java.awt.event.WindowEvent;\r\n\r\nimport javax.swing.BorderFactory;\r\nimport javax.swing.JFrame;\r\nimport javax.swing.SwingUtilities;\r\nimport javax.swing.Timer;\r\n\r\nimport assetManager.Data;\r\nimport assetManager.Sound;\r\nimport assetManager.SpriteSheetLoader;\r\nimport assetManager.Texture;\r\nimport information.Setting;\r\nimport input.KeyInput;\r\nimport input.MouseInput;\r\nimport loop.Loop;\r\nimport toolkit.Debug;\r\nimport toolkit.Tools;\r\nimport userGUI.Screen;\r\nimport userGUI.taskBar.TaskBar;\r\n\r\n/**\r\n * A framework for the entire program.\r\n * \r\n * @author  Yi Feng Wang\r\n * @version 1.0\r\n * @since   2020-12-23\r\n */\r\npublic class Main {\r\n\t\r\n\tprivate static Main main;\r\n\t\r\n\tprivate static JFrame frame;\r\n\t\r\n\tprivate static boolean isFocused;\r\n\tprivate static boolean isIconified;\r\n\t\r\n\t/**\r\n\t * Main constructor.\r\n\t */\r\n\tprivate Main() {\r\n\t\tJFrame.setDefaultLookAndFeelDecorated(true);\r\n\t\tframe = new JFrame();\r\n\t}\r\n\t\r\n\t/**\r\n\t * Singleton instance of the Main.\r\n\t * \r\n\t * @return  singleton instance\r\n\t */\r\n\tpublic static Main getInstance () {\r\n\t\tif (main == null)\r\n\t\t\tmain = new Main();\r\n\t\treturn main;\r\n\t}\r\n\t\r\n\t/**\r\n\t * Main method.\r\n\t * \r\n\t * @param args  does nothing.\r\n\t */\r\n   \tpublic static void main(String[] args) {\r\n   \t\tSwingUtilities.invokeLater(\r\n   \t\t\tnew Runnable() {\r\n\t   \t\t\tpublic void run() {\r\n\t   \t\t\t\tMain.getInstance();\r\n\t   \t\t\t\tSetting.getInstance();\r\n\t   \t\t\t\tTexture.getInstance();\r\n\t   \t\t\t\tSpriteSheetLoader.getInstance();\r\n\t   \t\t\t\tSound.getInstance();\r\n\t   \t\t\t\tData.getInstance();\r\n\t   \t\t\t\tTools.getInstance();\r\n\t   \t\t\t\tKeyInput.getInstance();\r\n\t   \t\t\t\tMouseInput.getInstance();\r\n\t   \t\t\t\tScreen.getInstance();\r\n\t\t   \t\t   \taddStuffToFrame();\r\n\t\t   \t\t\tDebug.getInstance();\r\n\t\t   \t\t\tframe.setVisible(true);\r\n\t   \t\t   \t\tnew Timer(1, Loop.getInstance()).start();\r\n\t   \t\t\t}\r\n   \t\t\t}\r\n   \t\t);\r\n   \t}\r\n   \t\r\n   \tprivate static void addStuffToFrame() {\r\n   \t\tsetFrameBorder();\r\n\t\tframe.getLayeredPane().getComponent(1).setPreferredSize(new Dimension(0, 0));\r\n\t\tframe.getContentPane().add(TaskBar.getInstance(), BorderLayout.NORTH);\r\n   \t\tsetFrameDimensions();\r\n    \tframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);\r\n   \t\tframe.getContentPane().add(Screen.getInstance());\r\n   \t\tframe.pack();\r\n   \t\tframe.setLocationRelativeTo(null);\r\n\t   \taddFrameListeners();\r\n   \t}\r\n   \t\r\n   \tprivate static void setFrameBorder() {\r\n   \t\tframe.getRootPane().setBorder(\r\n\t\t\tBorderFactory.createLineBorder(\r\n\t\t\t\tnew Color(230, 230, 230), \r\n\t\t\t\tSetting.getBorderLength()\r\n\t\t\t)\r\n\t\t);\r\n   \t}\r\n   \t\r\n   \tprivate static void setFrameDimensions() {\r\n\t\tframe.setMinimumSize(\r\n    \t\tnew Dimension(\r\n    \t\t\tSetting.getMinFrameLength(), \r\n    \t\t\tSetting.getMinFrameHeight()\r\n    \t\t)\r\n    \t);\r\n    \t\r\n    \tframe.getContentPane().setPreferredSize(\r\n    \t\tnew Dimension(\r\n    \t\t\tSetting.getFrameLength(), \r\n    \t\t\tSetting.getFrameHeight()\r\n    \t\t)\r\n    \t);\r\n\t}\r\n   \t\r\n   \tprivate static void addFrameListeners() {\r\n   \t\tframe.addWindowFocusListener(\r\n\t   \t\tnew WindowAdapter() {\r\n   \t\t\t\t@Override\r\n   \t\t   \t\tpublic void windowGainedFocus(WindowEvent e) {\r\n   \t\t\t    \tisFocused = true;\r\n   \t\t\t    }\r\n\r\n   \t\t\t\t@Override\r\n   \t\t\t    public void windowLostFocus(WindowEvent e) {\r\n   \t\t\t    \tMouseInput.getInstance().reset();\r\n   \t\t\t    \tisFocused = false;\r\n   \t\t\t    }\r\n\t   \t\t}\r\n\t   \t);\r\n\r\n\t   \tframe.addWindowListener(\r\n\t   \t\tnew WindowAdapter() {\r\n\t   \t\t\t/**\r\n\t   \t\t\t * Account for ALT F4 edge case.\r\n\t   \t\t\t *\r\n\t   \t\t\t * @param e  does nothing\r\n\t   \t\t\t */\r\n\t   \t\t\t@Override\r\n\t\t    \tpublic void windowClosing(WindowEvent e) {\r\n\t\t    \t\tSystem.out.println(\"closed\");\r\n\t\t    \t\tData.writeData();\r\n\t\t    \t\tSystem.exit(0);\r\n\t\t    \t}\r\n\r\n   \t\t   \t\t@Override\r\n   \t\t\t\tpublic void windowIconified(WindowEvent e) {\r\n   \t\t   \t\t\tisIconified = true;\r\n   \t\t\t    }\r\n\r\n   \t\t   \t\t@Override\r\n   \t\t   \t\tpublic void windowDeiconified(WindowEvent e) {\r\n   \t\t   \t\t\tisIconified = false;\r\n   \t\t   \t \t}\r\n\t   \t\t}\r\n\t   \t);\r\n   \t}\r\n   \t\r\n   \tpublic static JFrame getFrame() {\r\n   \t\treturn frame;\r\n   \t}\r\n   \t\r\n   \tpublic static int getLength() {\r\n   \t\treturn frame.getContentPane().getWidth();\r\n   \t}\r\n   \t\r\n   \tpublic static int getHeight() {\r\n   \t\treturn frame.getContentPane().getHeight();\r\n   \t}\r\n   \t\r\n   \tpublic static boolean isFocused() {\r\n\t\treturn isFocused;\r\n\t}\r\n\r\n\tpublic static void setFocused(boolean isFocused) {\r\n\t\tMain.isFocused = isFocused;\r\n\t}\r\n\t\r\n\tpublic static boolean isIconified() {\r\n\t\treturn isIconified;\r\n\t}\r\n\r\n\tpublic static void setIconified(boolean isIconified) {\r\n\t\tMain.isIconified = isIconified;\r\n\t}\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/Main.java b/src/main/Main.java
+--- a/src/main/Main.java	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ b/src/main/Main.java	(date 1614128086542)
+@@ -18,12 +18,12 @@
+ import assetManager.Sound;
+ import assetManager.SpriteSheetLoader;
+ import assetManager.Texture;
+-import information.Setting;
+ import input.KeyInput;
+ import input.MouseInput;
+ import loop.Loop;
+ import toolkit.Debug;
+ import toolkit.Tools;
++import userGUI.Frame;
+ import userGUI.Screen;
+ import userGUI.taskBar.TaskBar;
+ 
+@@ -72,7 +72,7 @@
+    			new Runnable() {
+ 	   			public void run() {
+ 	   				Main.getInstance();
+-	   				Setting.getInstance();
++	   				Frame.getInstance();
+ 	   				Texture.getInstance();
+ 	   				SpriteSheetLoader.getInstance();
+ 	   				Sound.getInstance();
+@@ -105,26 +105,15 @@
+    	private static void setFrameBorder() {
+    		frame.getRootPane().setBorder(
+ 			BorderFactory.createLineBorder(
+-				new Color(230, 230, 230), 
+-				Setting.getBorderLength()
++				new Color(230, 230, 230),
++				Frame.getBorderLength()
+ 			)
+ 		);
+    	}
+    	
+    	private static void setFrameDimensions() {
+-		frame.setMinimumSize(
+-    		new Dimension(
+-    			Setting.getMinFrameLength(), 
+-    			Setting.getMinFrameHeight()
+-    		)
+-    	);
+-    	
+-    	frame.getContentPane().setPreferredSize(
+-    		new Dimension(
+-    			Setting.getFrameLength(), 
+-    			Setting.getFrameHeight()
+-    		)
+-    	);
++		frame.setMinimumSize(new Dimension(Frame.getMinLength(), Frame.getMinHeight()));
++    	frame.getContentPane().setPreferredSize(new Dimension(Frame.getLength(), Frame.getHeight()));
+ 	}
+    	
+    	private static void addFrameListeners() {
+Index: src/userGUI/text/Text.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package userGUI.text;\r\n\r\nimport java.awt.Graphics;\r\n\r\nimport assetManager.Texture;\r\nimport information.Setting;\r\nimport userGUI.Screen;\r\n\r\n/**\r\n * \r\n * @author WYF\r\n *\r\n */\r\npublic class Text {\r\n\t\r\n\tprotected String text;\r\n\tprotected int x, y;\r\n\t\r\n\t/**\r\n\t * locationType should only ever be assigned one of these 3 values:\r\n\t * \"\"                    text should be relative to the top left corner of screen\r\n\t * \"center\"    \t\t\t text should be centered on the screen\r\n\t * \"relative to center\"  text should be relative to the center of the screen\r\n\t */\r\n\tprotected String locationType;\r\n\t\r\n\tpublic Text(String text) {\r\n\t\tthis.text = text;\r\n\t\tthis.locationType = \"center\";\r\n\t\tthis.x = 0;\r\n\t\tthis.y = 0;\r\n\t}\r\n\t\r\n\tpublic Text(String text, int x, int y) {\r\n\t\tthis.text = text;\r\n\t\tthis.locationType = \"\";\r\n\t\tthis.x = x;\r\n\t\tthis.y = y;\r\n\t}\r\n\t\r\n\tpublic Text(String text, int x, int y, String locationType) {\r\n\t\tthis.text = text;\r\n\t\tthis.x = x;\r\n\t\tthis.y = y;\r\n\t\tthis.locationType = locationType;\r\n\t}\r\n\r\n\tpublic void update() {}\r\n\t\r\n\tpublic void render(Graphics g) {\r\n\t\tswitch (locationType) {\r\n\t\t\tcase \"\":\r\n\t\t\t\tfor (int i = 0; i < text.length(); i++) {\r\n\t\t\t\t\tg.drawImage(Texture.getChar((int)text.charAt(i)), x + (12 * i), y, null);\r\n\t\t\t\t}\r\n\t\t\t\tbreak;\r\n\t\t\tcase \"center\":\r\n\t\t\t\tfor (int i = 0; i < text.length(); i++) {\r\n\t\t\t\t\tg.drawImage(\r\n\t\t\t\t\t\tTexture.getChar((int)text.charAt(i)), \r\n\t\t\t\t\t\t(12 * i) + Setting.getScreenPadding() + (Screen.getScreenLength() - 10 * text.length() - 2 * text.length() + 2) / 2, \r\n\t\t\t\t\t\tSetting.getScreenPadding() + (Screen.getScreenHeight() - 14) / 2, \r\n\t\t\t\t\t\tnull\r\n\t\t\t\t\t);\r\n\t\t\t\t}\r\n\t\t\t\tbreak;\r\n\t\t\tcase \"relative to center\":\r\n\t\t\t\tfor (int i = 0; i < text.length(); i++) {\r\n\t\t\t\t\tg.drawImage(\r\n\t\t\t\t\t\tTexture.getChar((int)text.charAt(i)), \r\n\t\t\t\t\t\t(12 * i) + Setting.getScreenPadding() + (Screen.getScreenLength() - 10 * text.length() - 2 * text.length() + 2) / 2 + x, \r\n\t\t\t\t\t\tSetting.getScreenPadding() + (Screen.getScreenHeight() - 14) / 2 + y, \r\n\t\t\t\t\t\tnull\r\n\t\t\t\t\t);\r\n\t\t\t\t}\r\n\t\t\t\tbreak;\r\n\t\t\tdefault:\r\n\t\t\t\tSystem.err.print(\"key not found\");\r\n\t\t}\r\n\t}\r\n\t\r\n\t/**\r\n\t * THIS FUNCTION IS NOT USED\r\n\t * @param g\r\n\t */\r\n\tpublic void drawText(Graphics g) {\r\n\t\tfor (int i = 0; i < text.length(); i++) {\r\n\t\t\tg.drawImage(Texture.getChar((int)text.charAt(i)), (12 * i), 0, null);\r\n\t\t}\r\n\t}\r\n\t\r\n\tpublic String getLocationType() {\r\n\t\treturn locationType;\r\n\t}\r\n\t\r\n\tpublic void setLocation(int x, int y) {\r\n\t\tif (this.locationType.equals(\"\")) {\r\n\t\t\tthis.x = x;\r\n\t\t\tthis.y = y;\r\n\t\t} else {\r\n\t\t\tSystem.err.println(\"Used function on wrong type of text.\");\r\n\t\t}\r\n\t}\r\n\t\r\n\tpublic int getX() {\r\n\t\treturn x;\r\n\t}\r\n\r\n\tpublic int getY() {\r\n\t\treturn y;\r\n\t}\r\n\r\n\tpublic String getText() {\r\n\t\treturn text;\r\n\t}\r\n\r\n\tpublic void setText(String text) {\r\n\t\tthis.text = text;\r\n\t}\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/userGUI/text/Text.java b/src/userGUI/text/Text.java
+--- a/src/userGUI/text/Text.java	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ b/src/userGUI/text/Text.java	(date 1614130243304)
+@@ -3,19 +3,20 @@
+ import java.awt.Graphics;
+ 
+ import assetManager.Texture;
+-import information.Setting;
++import userGUI.Frame;
+ import userGUI.Screen;
++import userGUI.taskBar.TaskBar;
+ 
+ /**
+- * 
+- * @author WYF
+  *
+  */
+ public class Text {
+-	
++
+ 	protected String text;
+ 	protected int x, y;
+-	
++
++	private int tempX, tempY;
++
+ 	/**
+ 	 * locationType should only ever be assigned one of these 3 values:
+ 	 * ""                    text should be relative to the top left corner of screen
+@@ -56,22 +57,16 @@
+ 				break;
+ 			case "center":
+ 				for (int i = 0; i < text.length(); i++) {
+-					g.drawImage(
+-						Texture.getChar((int)text.charAt(i)), 
+-						(12 * i) + Setting.getScreenPadding() + (Screen.getScreenLength() - 10 * text.length() - 2 * text.length() + 2) / 2, 
+-						Setting.getScreenPadding() + (Screen.getScreenHeight() - 14) / 2, 
+-						null
+-					);
++					tempX = 12 * i + (Screen.getScreenLength() - 10 * text.length() - 2 * text.length() + 2) / 2;
++					tempY = (Screen.getScreenHeight() - 14) / 2;
++					g.drawImage(Texture.getChar((int)text.charAt(i)), tempX, tempY, null);
+ 				}
+ 				break;
+ 			case "relative to center":
+ 				for (int i = 0; i < text.length(); i++) {
+-					g.drawImage(
+-						Texture.getChar((int)text.charAt(i)), 
+-						(12 * i) + Setting.getScreenPadding() + (Screen.getScreenLength() - 10 * text.length() - 2 * text.length() + 2) / 2 + x, 
+-						Setting.getScreenPadding() + (Screen.getScreenHeight() - 14) / 2 + y, 
+-						null
+-					);
++					tempX = 12 * i + (Screen.getScreenLength() - 10 * text.length() - 2 * text.length() + 2) / 2 + x;
++					tempY = (Screen.getScreenHeight() - 14) / 2 + y;
++					g.drawImage(Texture.getChar((int)text.charAt(i)), tempX, tempY, null);
+ 				}
+ 				break;
+ 			default:
+@@ -79,16 +74,6 @@
+ 		}
+ 	}
+ 	
+-	/**
+-	 * THIS FUNCTION IS NOT USED
+-	 * @param g
+-	 */
+-	public void drawText(Graphics g) {
+-		for (int i = 0; i < text.length(); i++) {
+-			g.drawImage(Texture.getChar((int)text.charAt(i)), (12 * i), 0, null);
+-		}
+-	}
+-	
+ 	public String getLocationType() {
+ 		return locationType;
+ 	}
+Index: out/production/Bumbly/asset/data/levelData.txt
+===================================================================
+diff --git a/out/production/Bumbly/asset/data/levelData.txt b/out/production/Bumbly/asset/data/levelData.txt
+deleted file mode 100644
+--- a/out/production/Bumbly/asset/data/levelData.txt	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ /dev/null	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
+@@ -1,16 +0,0 @@
+-Level_002 1
+-Level_003 0
+-Level_004 0
+-Level_005 0
+-Level_006 0
+-Level_007 0
+-Level_008 0
+-Level_009 0
+-Level_010 0
+-Level_011 0
+-Level_012 0
+-Level_013 0
+-Level_014 0
+-Level_015 0
+-Level_016 0
+-Tutorial 1
+Index: src/information/Setting.java
+===================================================================
+diff --git a/src/information/Setting.java b/src/information/Setting.java
+deleted file mode 100644
+--- a/src/information/Setting.java	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ /dev/null	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
+@@ -1,131 +0,0 @@
+-package information;
+-
+-import main.Main;
+-
+-/**
+- * 
+- * @author WYF
+- */
+-public class Setting {
+-	
+-	private static Setting setting;
+-	
+-	private static int minFrameHeight;
+-	private static int minframeLength;
+-	private static int screenHeight;
+-	private static int screenLength;
+-	private static int defaultFrameHeight;
+-	private static int defaultFrameLength;
+-	private static int frameHeight;
+-	private static int frameLength;
+-	
+-	private static boolean isResizing;
+-	private static boolean isMaximized;
+-	
+-	private static final int BORDERLENGTH = 4;
+-	
+-	private static final int TASKBARHEIGHT = 30;
+-
+-	private static final int SCREENPADDING = 0;
+-	
+-	private Setting() {
+-		minframeLength = 288;
+-		minFrameHeight = 288 + TASKBARHEIGHT + 2 * BORDERLENGTH;
+-		
+-		screenLength = minframeLength;
+-		screenHeight = minFrameHeight - TASKBARHEIGHT - 2 * BORDERLENGTH;
+-		
+-		defaultFrameLength = screenLength;
+-		defaultFrameHeight = screenHeight;
+-		
+-		frameLength = defaultFrameLength;
+-		frameHeight = defaultFrameHeight;
+-	}
+-	
+-	public static Setting getInstance() {
+-		if (setting == null)
+-			setting = new Setting();
+-		return setting;
+-	}
+-	
+-	public static void update() {
+-		frameLength = Main.getLength();
+-		frameHeight = Main.getHeight();
+-	}	
+-	
+-	public static int getDefaultFrameLength() {
+-		return defaultFrameLength;
+-	}
+-
+-	public static void setDefaultFrameLength(int defaultFrameLength) {
+-		Setting.defaultFrameLength = defaultFrameLength;
+-	}
+-
+-	public static int getDefaultFrameHeight() {
+-		return defaultFrameHeight;
+-	}
+-
+-	public static void setDefaultFrameHeight(int defaultFrameHeight) {
+-		Setting.defaultFrameHeight = defaultFrameHeight;
+-	}
+-
+-	public static int getMinFrameHeight() {
+-		return Setting.minFrameHeight;
+-	}
+-
+-	public static int getMinFrameLength() {
+-		return Setting.minframeLength;
+-	}
+-
+-	public static boolean isResizing() {
+-		return Setting.isResizing;
+-	}
+-
+-	public static void setResizing(boolean isResizing) {
+-		Setting.isResizing = isResizing;
+-	}
+-	
+-	public static boolean isMaximized() {
+-		return Setting.isMaximized;
+-	}
+-
+-	public static void setMaximized(boolean isMaximized) {
+-		Setting.isMaximized = isMaximized;
+-	}
+-
+-	public static int getScreenHeight() {
+-		return Setting.screenHeight;
+-	}
+-
+-	public static int getScreenLength() {
+-		return Setting.screenLength;
+-	}
+-	
+-	public static int getFrameHeight() {
+-		return Setting.frameHeight;
+-	}
+-	
+-	public static int getFrameLength() {
+-		return Setting.frameLength;
+-	}
+-	
+-	public static void setFrameLength(int frameLength) {
+-		Setting.frameLength = frameLength;
+-	}
+-	
+-	public static void setFrameHeight(int frameHeight) {
+-		Setting.frameHeight = frameHeight;
+-	}
+-	
+-	public static final int getBorderLength() {
+-		return Setting.BORDERLENGTH;
+-	}
+-	
+-	public static final int getScreenPadding() {
+-		return Setting.SCREENPADDING;
+-	}
+-	
+-	public static final int getTaskBarHeight() {
+-		return TASKBARHEIGHT;
+-	}
+-}
+Index: src/assetManager/Sound.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package assetManager;\r\n\r\nimport java.io.File;\r\nimport java.util.HashMap;\r\n\r\nimport javax.sound.sampled.AudioSystem;\r\nimport javax.sound.sampled.Clip;\r\nimport javax.sound.sampled.FloatControl;\r\n\r\n/**\r\n * Load all the sound files.\r\n * \r\n * @author Yi Feng Wang\r\n */\r\n// TODO: make sound class extend from the fileloader\r\npublic class Sound {\r\n\t\r\n\tprivate static Sound sound;\r\n\t\r\n\tprivate static final String DIRECTORY = \"src/asset/sound/\";\r\n\t\r\n\tprivate static HashMap <String, Clip> Clips;\r\n\t\r\n\tpublic Sound () {\r\n\t\t\r\n\t\tClips = new HashMap <String, Clip> ();\r\n\t\t\r\n\t\tClips.put(\"background\", loadClip(\"bensound-tenderness\"));\r\n\t}\r\n\t\r\n\t/**\r\n\t * Singleton instance of Sound.\r\n\t * \r\n\t * @return  singleton instance\r\n\t */\r\n\tpublic static Sound getInstance() {\r\n\t\tif (sound == null)\r\n\t\t\tsound = new Sound();\r\n\t\treturn sound;\r\n\t}\r\n\t\r\n\t/**\r\n\t * Loads an audio clip to be played. \r\n\t * The clip must have 16 PCM, with a frequency of 44100 Hz\r\n\t * \r\n\t * @param clipName  the name of the clip to load\r\n\t * @return\t\t\tthe clip to be played\r\n\t */\r\n\tpublic Clip loadClip(String clipName) {\r\n\t\ttry{\r\n            Clip myClip = AudioSystem.getClip();\r\n            \r\n            myClip.open(\r\n        \t\tAudioSystem.getAudioInputStream(\r\n    \t\t\t\tnew File(\r\n            \t\t\tDIRECTORY + clipName + \".wav\"\r\n            \t\t)\r\n                )\r\n\t        );\r\n            \r\n            FloatControl gainControl = \r\n            \t\t  (FloatControl) myClip.getControl(FloatControl.Type.MASTER_GAIN);\r\n            gainControl.setValue(-15.0f);\r\n            \r\n\t\t\treturn myClip;\r\n        } catch(Exception e) {\r\n        \te.printStackTrace();\r\n        \treturn null;\r\n        }\r\n\t}\r\n\t\r\n\tpublic static void loopClip(String clipName) {\r\n\t\tClips.get(clipName).loop(Clip.LOOP_CONTINUOUSLY);\r\n\t}\r\n\t\r\n\tpublic static void playClip(String clipName) {\r\n\t\tClips.get(clipName).start();\r\n\t}\r\n\t\r\n\tpublic void pauseClip(String clipName) {\r\n\t\ttry {\r\n\t\t\tClips.get(clipName).wait();\r\n\t\t} catch (InterruptedException e) {\r\n\t\t\te.printStackTrace();\r\n\t\t}\r\n\t}\r\n\t\r\n\tpublic void stopClip(String clipName) {\r\n\t\tClips.get(clipName).stop();\r\n\t}\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/assetManager/Sound.java b/src/assetManager/Sound.java
+--- a/src/assetManager/Sound.java	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ b/src/assetManager/Sound.java	(date 1614113978999)
+@@ -12,7 +12,7 @@
+  * 
+  * @author Yi Feng Wang
+  */
+-// TODO: make sound class extend from the fileloader
++// TODO: make sound class extend from the file loader
+ public class Sound {
+ 	
+ 	private static Sound sound;
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1614113907725)
++++ b/.idea/vcs.xml	(date 1614113907725)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: src/factory/Factory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package factory;\r\n\r\nimport assetManager.FileLoader;\r\nimport command.LoadProductCommand;\r\n\r\npublic class Factory extends FileLoader {\r\n\tpublic Factory(String directory, String suffix) {\r\n\t\tsuper(directory, suffix);\r\n\t\tloadFiles(\r\n\t\t\tLoadProductCommand.init(directory, getFileDirectories())\r\n\t\t);\r\n\t}\r\n\t\r\n\tpublic Object createProduct(String productType) {\t\t\r\n\t\tif (getFileDirectories().containsKey(productType)) {\r\n\t\t\ttry {\r\n\t\t\t\treturn Class.forName(\r\n\t            \tgetFileDirectories().get(productType)\r\n\t            ).getDeclaredConstructor().newInstance();\r\n\t\t\t\t\r\n\t\t\t} catch (Throwable e) {\r\n\t\t\t\tSystem.err.println(\"Product \" + productType + \" could not be created.\");\r\n\t\t\t\treturn null;\r\n\t        }\r\n\t\t}\r\n\t\t\r\n\t\tSystem.err.println(\"Product \" + productType + \" does not exist.\");\r\n\t\treturn null;\r\n\t}\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/factory/Factory.java b/src/factory/Factory.java
+--- a/src/factory/Factory.java	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ b/src/factory/Factory.java	(date 1614114044898)
+@@ -20,6 +20,7 @@
+ 				
+ 			} catch (Throwable e) {
+ 				System.err.println("Product " + productType + " could not be created.");
++				e.printStackTrace();
+ 				return null;
+ 	        }
+ 		}
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"3920fa0a-d203-4e02-9c09-25f711541eeb\" name=\"Default Changelist\" comment=\"\" />\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"1orh82nEOxkyF8ei1kvsbbPAnDG\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"flattenPackages\" value=\"true\" />\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"Main\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"main.Main\" />\r\n      <module name=\"Java_Game_Engine\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"main.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.Main\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"3920fa0a-d203-4e02-9c09-25f711541eeb\" name=\"Default Changelist\" comment=\"\" />\r\n      <created>1614050456479</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1614050456479</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 7b0c3ec3ac1356aa44169832decf0e7d9d4d1a15)
++++ b/.idea/workspace.xml	(date 1614128113707)
+@@ -1,13 +1,112 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="3920fa0a-d203-4e02-9c09-25f711541eeb" name="Default Changelist" comment="" />
++    <list default="true" id="3920fa0a-d203-4e02-9c09-25f711541eeb" name="Default Changelist" comment="">
++      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/data/levelData.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/sound/bensound-tenderness.wav" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/texture/taskBar/exit_icon.png" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/texture/taskBar/maximize_icon.png" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/texture/taskBar/minimize_icon.png" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/asset/texture/userGUI/font/spritesheet_font_11_15.png" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/Data.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/FileLoader$1.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/FileLoader.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/Sound.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/SpriteSheet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/SpriteSheetLoader.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/assetManager/Texture.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/command/Command.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/command/FileCommand.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/command/LoadPNGCommand.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/command/LoadProductCommand.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/factory/Factory.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/information/Setting.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/KeyInput$1.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/KeyInput.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/MouseInput$1.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/MouseInput$2.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/MouseInput$3.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/input/MouseInput.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/loop/Loop.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/main/Main$1.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/main/Main$2.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/main/Main$3.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/main/Main.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/page/MyPage.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/toolkit/Debug.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/toolkit/Pair.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/toolkit/Tools.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/toolkit/Tuple.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/Page.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/Screen.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/button/Button$1.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/button/Button.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/button/ImageButton$1.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/button/ImageButton.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/entity/ClickableEntity$1.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/entity/ClickableEntity$State.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/entity/ClickableEntity.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/entity/DraggableEntity.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/ExitButton.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/MaximizeButton$1.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/MaximizeButton.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/MinimizeButton$1.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/MinimizeButton.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/TaskBar$1.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/TaskBar$2.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/TaskBar.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/taskBar/icon/Icon.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/text/CenteredString.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/text/Dialogue.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/text/Text.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Bumbly/userGUI/text/TypingText.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/factory/Factory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/factory/Factory.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/information/Setting.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/loop/Loop.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/loop/Loop.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$1.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$2.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main$3.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/main/Main.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/Screen.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/Screen.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/ExitButton.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/ExitButton.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MaximizeButton$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MaximizeButton$1.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MaximizeButton.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MaximizeButton.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MinimizeButton.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/MinimizeButton.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar$1.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar$2.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/taskBar/TaskBar.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/text/Text.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Java_Game_Engine/userGUI/text/Text.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/assetManager/Sound.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/assetManager/Sound.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/factory/Factory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/factory/Factory.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/information/Setting.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/loop/Loop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/loop/Loop.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Main.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/userGUI/Screen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/Screen.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/userGUI/taskBar/ExitButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/taskBar/ExitButton.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/userGUI/taskBar/MaximizeButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/taskBar/MaximizeButton.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/userGUI/taskBar/MinimizeButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/taskBar/MinimizeButton.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/userGUI/taskBar/TaskBar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/taskBar/TaskBar.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/userGUI/text/Text.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/userGUI/text/Text.java" afterDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+     <option name="LAST_RESOLUTION" value="IGNORE" />
+   </component>
++  <component name="FileTemplateManagerImpl">
++    <option name="RECENT_TEMPLATES">
++      <list>
++        <option value="Class" />
++      </list>
++    </option>
++  </component>
++  <component name="Git.Settings">
++    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++  </component>
+   <component name="ProjectId" id="1orh82nEOxkyF8ei1kvsbbPAnDG" />
++  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+   <component name="ProjectViewState">
+     <option name="flattenPackages" value="true" />
+     <option name="hideEmptyMiddlePackages" value="true" />
+@@ -16,6 +115,7 @@
+   <component name="PropertiesComponent">
+     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
++    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+   </component>
+   <component name="RunManager">
+     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+@@ -48,4 +148,15 @@
+     </task>
+     <servers />
+   </component>
++  <component name="Vcs.Log.Tabs.Properties">
++    <option name="TAB_STATES">
++      <map>
++        <entry key="MAIN">
++          <value>
++            <State />
++          </value>
++        </entry>
++      </map>
++    </option>
++  </component>
+ </project>
+\ No newline at end of file
