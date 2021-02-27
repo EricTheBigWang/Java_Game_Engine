@@ -86,6 +86,7 @@ public class Screen extends JPanel {
 	public void update() {
 		screenX = HORIZONTALPADDING;
 		screenY = VERTICALPADDING;
+
 		screenLength = Frame.getLength() - 2 * HORIZONTALPADDING;
 		screenHeight = Frame.getHeight() - 2 * VERTICALPADDING - TaskBar.getInstance().getHeight();
 

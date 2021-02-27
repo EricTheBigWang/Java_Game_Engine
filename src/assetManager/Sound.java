@@ -1,5 +1,8 @@
 package assetManager;
 
+import command.LoadClipsCommand;
+import command.LoadPNGCommand;
+
 import java.io.File;
 import java.util.HashMap;
 
@@ -13,19 +16,21 @@ import javax.sound.sampled.FloatControl;
  * @author Yi Feng Wang
  */
 // TODO: make sound class extend from the file loader
-public class Sound {
+public class Sound extends FileLoader {
 	
 	private static Sound sound;
 	
 	private static final String DIRECTORY = "src/asset/sound/";
 	
-	private static HashMap <String, Clip> Clips;
+	private static HashMap <String, Clip> clips;
 	
-	public Sound () {
+	private Sound() {
+		super(DIRECTORY, ".wav");
+
+		clips = new HashMap <String, Clip> ();
 		
-		Clips = new HashMap <String, Clip> ();
-		
-		Clips.put("background", loadClip("bensound-tenderness"));
+		// clips.put("background", loadClip("bensound-tenderness"));
+		loadFiles(LoadClipsCommand.init(DIRECTORY, clips));
 	}
 	
 	/**
@@ -38,54 +43,24 @@ public class Sound {
 			sound = new Sound();
 		return sound;
 	}
-	
-	/**
-	 * Loads an audio clip to be played. 
-	 * The clip must have 16 PCM, with a frequency of 44100 Hz
-	 * 
-	 * @param clipName  the name of the clip to load
-	 * @return			the clip to be played
-	 */
-	public Clip loadClip(String clipName) {
-		try{
-            Clip myClip = AudioSystem.getClip();
-            
-            myClip.open(
-        		AudioSystem.getAudioInputStream(
-    				new File(
-            			DIRECTORY + clipName + ".wav"
-            		)
-                )
-	        );
-            
-            FloatControl gainControl = 
-            		  (FloatControl) myClip.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-15.0f);
-            
-			return myClip;
-        } catch(Exception e) {
-        	e.printStackTrace();
-        	return null;
-        }
-	}
-	
+
 	public static void loopClip(String clipName) {
-		Clips.get(clipName).loop(Clip.LOOP_CONTINUOUSLY);
+		clips.get(clipName).loop(Clip.LOOP_CONTINUOUSLY);
 	}
 	
 	public static void playClip(String clipName) {
-		Clips.get(clipName).start();
+		clips.get(clipName).start();
 	}
 	
 	public void pauseClip(String clipName) {
 		try {
-			Clips.get(clipName).wait();
+			clips.get(clipName).wait();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void stopClip(String clipName) {
-		Clips.get(clipName).stop();
+		clips.get(clipName).stop();
 	}
 }
