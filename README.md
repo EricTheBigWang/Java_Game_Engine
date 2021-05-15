@@ -23,9 +23,7 @@ The game screen centers when the frame resizes.
   No need to explicitly mention every asset loaded through code.
 
 ## Potential Updates
-- [ ] Make readme better
-- [ ] Improved documentation
-- [x] Refactor settings.java
+- [ ] Improve documentation and readme
 - [ ] Rework taskbar to inherit builtin classes
 - [ ] Mac and Linux support
 - [ ] Support for 3D graphics
